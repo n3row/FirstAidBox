@@ -1,4 +1,4 @@
-package com.FirstAidKit.Components;
+package com.FirstAidBox.Components;
 
 public class Scissors extends Component {
 
@@ -7,8 +7,13 @@ public class Scissors extends Component {
     }
 
     @Override
-    public void collect() {
+    public void collect(int delay) {
         System.out.println("Collecting scissors (" + _mass + " grams)");
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -1,6 +1,8 @@
-package com.FirstAidKit.Components;
+package com.FirstAidBox.Components;
 
-import com.FirstAidKit.FirstAidComponent;
+import com.FirstAidBox.FirstAidComponent;
+
+import java.util.Objects;
 
 public abstract class Component implements FirstAidComponent {
     protected Integer _mass;
@@ -22,4 +24,18 @@ public abstract class Component implements FirstAidComponent {
     public int mass() {
         return _mass;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_mass);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Component Component = (Component) o;
+        return Objects.equals(_mass, Component._mass);
+    }
+
 }

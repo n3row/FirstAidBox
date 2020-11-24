@@ -1,7 +1,7 @@
 package com.FirstAidKit;
 
 public interface FirstAidComponent {
-    void collect();
+    void collect(int delay);
     int count();
     int mass();
 }
