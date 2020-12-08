@@ -1,4 +1,4 @@
-package com.FirstAidKit.Components;
+package com.FirstAidBox.Components;
 
 public class Plasters extends Component {
 
@@ -7,13 +7,18 @@ public class Plasters extends Component {
     }
 
     @Override
-    public void collect() {
+    public void collect(int delay) {
         System.out.println("Collecting some plasters (" + _mass + " grams)");
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public String toString() {
-        return "Plasters";
+        return "Plasters" + " (" + _mass + "g)";
     }
 
 }
