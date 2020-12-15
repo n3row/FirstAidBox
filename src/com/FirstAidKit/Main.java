@@ -33,10 +33,10 @@ public class Main {
         }
 
         // find
-        System.out.println("Specific item with 110 grams mass: " + basicFirstAidBox.find(comp -> comp.mass() == 110).get());
-        System.out.println("All painkillers in basicFirstAidBox: " + basicFirstAidBox.findAll(component -> component instanceof Painkillers));
+        System.out.println("Specific item with 110 grams mass: " + _FirstAidBox.find(comp -> comp.mass() == 110).get());
+        System.out.println("All painkillers in _FirstAidBox: " + _FirstAidBox.findAll(component -> component instanceof Painkillers));
 
-        FirstAidRepository _FirstAidRepository = new FirstAidRepository(basicFirstAidBox);
+        FirstAidRepository _FirstAidRepository = new FirstAidRepository(_FirstAidBox);
 
         System.out.println("The most heavy component (by mass): " + _FirstAidRepository
                 .getMostHeavyComponent()
