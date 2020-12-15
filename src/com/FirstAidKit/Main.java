@@ -32,7 +32,32 @@ public class Main {
             System.err.println(e.getMessage());
         }
 
-        //_FirstAidBox.collect();
-        //_FirstAidBox.FirstAidBoxInfo();
+        // find
+        System.out.println("Specific item with 110 grams mass: " + _FirstAidBox.find(comp -> comp.mass() == 110).get());
+        System.out.println("All painkillers in _FirstAidBox: " + _FirstAidBox.findAll(component -> component instanceof Painkillers));
+
+        FirstAidRepository _FirstAidRepository = new FirstAidRepository(_FirstAidBox);
+
+        System.out.println("The most heavy component (by mass): " + _FirstAidRepository
+                .getMostHeavyComponent()
+                .orElse(null)
+        );
+        System.out.println("Average mass of components: " +
+                _FirstAidRepository
+                        .getAverageMass()
+                        .orElse(Double.NaN)
+        );
+
+        System.out.println("Mapped components: ");
+        System.out.println(_FirstAidRepository
+                .getMappedComponents(component -> component.mass() > 50 ? "heavy" : "light"));
+
+        double averagePillsMass = _FirstAidRepository
+                .getAllPills()
+                .mapToInt(comp -> comp.mass())
+                .average()
+                .orElse(Double.NaN);
+        System.out.println("Average Pills mass: " + averagePillsMass);
+
     }
 }

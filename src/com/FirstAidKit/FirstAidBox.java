@@ -5,6 +5,9 @@ import com.FirstAidKit.Components.ExcessComponentsChain;
 
 import java.util.*;
 
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 enum FirstAidBoxSize {
     SMALL, MEDIUM, LARGE;
     @Override
@@ -46,6 +49,35 @@ public class FirstAidBox {
     private void changeFirstAidBoxState(FirstAidBoxState state) {
         this._state = state;
         System.out.println("FirstAidBox \"" + _name + "\" changed state to: " + this._state);
+    }
+
+    /**
+     * find - function: finds the first component, that meets callback
+     *
+     * @param cb - lambda callback for applying on each element
+     * @return FirstAidComponent if found, else null
+     */
+
+    public FirstAidComponent find(Predicate<? super FirstAidComponent> cb) {
+        return this._components
+                .stream()
+                .filter(cb)
+                .findFirst();
+    }
+
+    /**
+     * findAll - function: finds all components, that meets callback
+     *
+     * @param cb - lambda callback for applying on each element
+     * @return ArrayList<FirstAidComponent> - components that meets callback
+     */
+
+    public ArrayList<FirstAidComponent> findAll(Predicate<? super FirstAidComponent> cb) {
+        return this
+                .getComponents()
+                .stream()
+                .filter(cb)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void collect() {
