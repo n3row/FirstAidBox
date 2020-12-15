@@ -5,8 +5,7 @@ import java.util.*;
 import com.FirstAidBox.Components.*;
 import com.FirstAidKit.FirstAidExceptions.ExcessComponentException;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -33,40 +32,32 @@ public class Main {
             System.err.println(e.getMessage());
         }
 
-        System.out.println("/ Functional testing: \'");
         // find
-        System.out.println("All Painkillers in _FirstAidBox: " + _FirstAidBox.findAll(component -> component instanceof Painkillers));
-        System.out.println("Heaviest component (by mass): " +
-                _FirstAidBox
-                        .getComponents()
-                        .stream()
-                        .reduce(_FirstAidBox.getComponents().stream().findFirst().get(),
-                                (component, heaviest) -> heaviest.mass() < component.mass() ? component : heaviest
-                        )
+        System.out.println("Specific item with 110 grams mass: " + basicFirstAidBox.find(comp -> comp.mass() == 110).get());
+        System.out.println("All painkillers in basicFirstAidBox: " + basicFirstAidBox.findAll(component -> component instanceof Painkillers));
+
+        FirstAidRepository _FirstAidRepository = new FirstAidRepository(basicFirstAidBox);
+
+        System.out.println("The most heavy component (by mass): " + _FirstAidRepository
+                .getMostHeavyComponent()
+                .orElse(null)
         );
-        System.out.println("AVG mass of components: " +
-                _FirstAidBox
-                        .getComponents()
-                        .stream()
-                        .mapToInt(comp -> comp.mass())
-                        .average()
-                        .getAsDouble()
+        System.out.println("Average mass of components: " +
+                _FirstAidRepository
+                        .getAverageMass()
+                        .orElse(Double.NaN)
         );
 
-        Map<String, List<FirstAidBoxComponent>> mappedComponents = _FirstAidBox
-                .getComponents()
-                .stream()
-                .collect(Collectors.groupingBy(component -> component.mass() > 100 ? "normal" : "less than normal"));
         System.out.println("Mapped components: ");
-        System.out.println(mappedComponents);
+        System.out.println(_FirstAidRepository
+                .getMappedComponents(component -> component.mass() > 50 ? "heavy" : "light"));
 
-        Double averagePillsMass = _FirstAidBox
-                .getComponents()
-                .stream()
-                .flatMap(component -> component instanceof Pills ? ((Pills) component).getPills().stream() : null)
+        double averagePillsMass = _FirstAidRepository
+                .getAllPills()
                 .mapToInt(comp -> comp.mass())
                 .average()
-                .getAsDouble();
-        System.out.println("AVG Pills mass: " + averagePillsMass);
+                .orElse(Double.NaN);
+        System.out.println("Average Pills mass: " + averagePillsMass);
+
     }
 }

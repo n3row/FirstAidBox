@@ -2,9 +2,11 @@ package com.FirstAidKit;
 import com.FirstAidKit.FirstAidComponent;
 import com.FirstAidKit.FirstAidExceptions.ExcessComponentException;
 import com.FirstAidKit.Components.ExcessComponentsChain;
-import java.util.function.Predicate;
 
 import java.util.*;
+
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 enum FirstAidBoxSize {
     SMALL, MEDIUM, LARGE;
@@ -57,11 +59,10 @@ public class FirstAidBox {
      */
 
     public FirstAidComponent find(Predicate<? super FirstAidComponent> cb) {
-        for (FirstAidComponent comp : this._components) {
-            if (cb.test(comp))
-                return comp;
-        }
-        return null;
+        return this._components
+                .stream()
+                .filter(cb)
+                .findFirst();
     }
 
     /**
@@ -72,13 +73,13 @@ public class FirstAidBox {
      */
 
     public ArrayList<FirstAidComponent> findAll(Predicate<? super FirstAidComponent> cb) {
-        ArrayList<FirstAidComponent> components = new ArrayList<>();
-        for (FirstAidComponent comp : this._components) {
-            if (cb.test(comp))
-                components.add(comp);
-        }
-        return components;
+        return this
+                .getComponents()
+                .stream()
+                .filter(cb)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
+
     public void collect() {
         changeFirstAidBoxState(FirstAidBoxState.COLLECTING);
         Random rnd = new Random();
