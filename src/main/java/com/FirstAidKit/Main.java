@@ -2,54 +2,58 @@ package com.FirstAidKit;
 
 import java.util.*;
 
-import com.FirstAidBox.Components.*;
+import com.FirstAidKit.Components.*;
 import com.FirstAidKit.FirstAidExceptions.ExcessComponentException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Main {
+    private static final Logger logger = LogManager.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
         ExcessComponentsChain mainExcessComponents = new ExcessComponentsChain();
         mainExcessComponents.add(Map.entry(Plasters.class, Bandages.class));
-        System.out.println(mainExcessComponents);
-        System.out.println(
+        logger.info(mainExcessComponents);
+        logger.info(
                 mainExcessComponents.contains(Map.entry(Plasters.class, Bandages.class)) ||
                         mainExcessComponents.contains(Map.entry(Bandages.class, Plasters.class))
         );
 
-        FirstAidBox _FirstAidBox = new FirstAidBox(new ArrayList<>(), "_FirstAidBox",  FirstAidBoxSize.LARGE, mainExcessComponents);
+        FirstAidKit _FirstAidKit = new FirstAidKit(new ArrayList<>(), "_FirstAidKit",  FirstAidKitSize.LARGE, mainExcessComponents);
         try {
 
-            _FirstAidBox.addFirstAidComponent(new Scissors(125))
+            _FirstAidKit.addFirstAidComponent(new Scissors(125))
                     .addFirstAidComponent(new Plasters(40))
                     .addFirstAidComponent(new Bandages(75))
                     .addFirstAidComponent(new Dressings(110))
                     .addFirstAidComponent(new Painkillers(250, "Ibuprofen"))
                     .addFirstAidComponent(new Painkillers(80, "Paracetamol"));
 
-        } catch (com.FirstAidBox.FirstAidExceptions.ExcessComponentException e) {
-            System.err.println(e.getMessage());
+        } catch (com.FirstAidKit.FirstAidExceptions.ExcessComponentException e) {
+            logger.error(e.getMessage());
         }
 
         // find
-        System.out.println("Specific item with 110 grams mass: " + _FirstAidBox.find(comp -> comp.mass() == 110).get());
-        System.out.println("All painkillers in _FirstAidBox: " + _FirstAidBox.findAll(component -> component instanceof Painkillers));
+        logger.info("Specific item with 110 grams mass: " + _FirstAidKit.find(comp -> comp.mass() == 110).get());
+        logger.info("All painkillers in _FirstAidKit: " + _FirstAidKit.findAll(component -> component instanceof Painkillers));
 
-        FirstAidRepository _FirstAidRepository = new FirstAidRepository(_FirstAidBox);
+        FirstAidRepository _FirstAidRepository = new FirstAidRepository(_FirstAidKit);
 
-        System.out.println("The most heavy component (by mass): " + _FirstAidRepository
+        logger.info("The most heavy component (by mass): " + _FirstAidRepository
                 .getMostHeavyComponent()
                 .orElse(null)
         );
-        System.out.println("Average mass of components: " +
+        logger.info("Average mass of components: " +
                 _FirstAidRepository
                         .getAverageMass()
                         .orElse(Double.NaN)
         );
 
-        System.out.println("Mapped components: ");
-        System.out.println(_FirstAidRepository
+        logger.info("Mapped components: ");
+        logger.info(_FirstAidRepository
                 .getMappedComponents(component -> component.mass() > 50 ? "heavy" : "light"));
 
         double averagePillsMass = _FirstAidRepository
@@ -57,7 +61,7 @@ public class Main {
                 .mapToInt(comp -> comp.mass())
                 .average()
                 .orElse(Double.NaN);
-        System.out.println("Average Pills mass: " + averagePillsMass);
+        logger.info("Average Pills mass: " + averagePillsMass);
 
     }
 }

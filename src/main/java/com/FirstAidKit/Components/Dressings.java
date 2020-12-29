@@ -8,7 +8,7 @@ public class Dressings extends Component {
 
     @Override
     public void collect(int delay) {
-        System.out.println("Collecting some dressings (" + _mass + " grams)");
+        logger.info("Collecting some dressings (" + _mass + " grams)");
         try {
             Thread.sleep(delay);
         } catch (InterruptedException e) {

@@ -3,12 +3,15 @@ import com.FirstAidKit.FirstAidComponent;
 import com.FirstAidKit.FirstAidExceptions.ExcessComponentException;
 import com.FirstAidKit.Components.ExcessComponentsChain;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.*;
 
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-enum FirstAidBoxSize {
+enum FirstAidKitSize {
     SMALL, MEDIUM, LARGE;
     @Override
     public String toString() {
@@ -17,7 +20,7 @@ enum FirstAidBoxSize {
 }
 
 
-enum FirstAidBoxState {
+enum FirstAidKitState {
     EMPTY, COLLECTING, SORT_IN_ORDER, FULL;
     @Override
     public String toString() {
@@ -26,29 +29,31 @@ enum FirstAidBoxState {
 }
 
 
-public class FirstAidBox {
+public class FirstAidKit {
+    private static final Logger logger = LogManager.getLogger(Pizza.class.getName());
+
 
     private final Collection<FirstAidComponent> _components;
     private final String _name;
     private int _totalMass;
     private ExcessComponentsChain _ExcessComponentsChain;
 
-    private final FirstAidBoxSize _size;
+    private final FirstAidKitSize _size;
 
-    private FirstAidBoxState _state;
-    public FirstAidBox(Collection<FirstAidComponent> _components, String _name, FirstAidBoxSize _size, ExcessComponentsChain _ExcessComponentsChain) {
+    private FirstAidKitState _state;
+    public FirstAidKit(Collection<FirstAidComponent> _components, String _name, FirstAidKitSize _size, ExcessComponentsChain _ExcessComponentsChain) {
         this._components = _components;
         this._name = _name;
         this._size = _size;
-        this._state = FirstAidBoxState.EMPTY;
+        this._state = FirstAidKitState.EMPTY;
         this._totalMass = 0;
         this._ExcessComponentsChain = _ExcessComponentsChain;
 
     }
 
-    private void changeFirstAidBoxState(FirstAidBoxState state) {
+    private void changeFirstAidKitState(FirstAidKitState state) {
         this._state = state;
-        System.out.println("FirstAidBox \"" + _name + "\" changed state to: " + this._state);
+        logger.debug("FirstAidKit \"" + _name + "\" changed state to: " + this._state);
     }
 
     /**
@@ -81,7 +86,7 @@ public class FirstAidBox {
     }
 
     public void collect() {
-        changeFirstAidBoxState(FirstAidBoxState.COLLECTING);
+        changeFirstAidKitState(FirstAidKitState.COLLECTING);
         Random rnd = new Random();
 
         Iterator<FirstAidComponent> it = _components.iterator();
@@ -89,16 +94,16 @@ public class FirstAidBox {
             FirstAidComponent cmp = it.next();
             cmp.collect(rnd.nextInt(500));
         }
-        changeFirstAidBoxState(FirstAidBoxState.SORT_IN_ORDER);
+        changeFirstAidKitState(FirstAidKitState.SORT_IN_ORDER);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            System.out.println("Unknown error!");
+            logger.error("Unknown error!");
             System.exit(1);
         }
-        changeFirstAidBoxState(FirstAidBoxState.FULL);
+        changeFirstAidKitState(FirstAidKitState.FULL);
     }
-    public FirstAidBox addFirstAidComponent(FirstAidComponent component) throws ExcessComponentException {
+    public FirstAidKit addFirstAidComponent(FirstAidComponent component) throws ExcessComponentException {
         if (this._components.stream()
                 .anyMatch(currComp ->
                         _ExcessComponentsChain.contains(Map.entry(currComp.getClass(), component.getClass())) ||
@@ -112,21 +117,21 @@ public class FirstAidBox {
         return this;
     }
 
-    public void FirstAidBoxInfo() {
-        System.out.println(" --- FirstAidBox Info ---");
-        System.out.println("FirstAidBox name: " + _name);
-        System.out.println("FirstAidBox size: " + _size);
-        System.out.println("FirstAidBox: ");
+    public void FirstAidKitInfo() {
+        logger.info(" --- FirstAidKit Info ---");
+        logger.info("FirstAidKit name: " + _name);
+        logger.info("FirstAidKit size: " + _size);
+        logger.info("FirstAidKit: ");
         int count = 0;
         Iterator<FirstAidComponent> it = _components.iterator();
         while (it.hasNext()) {
             FirstAidComponent cmp = it.next();
-            System.out.println(" | " + cmp + ": total count = " + cmp.count() + "; total mass = " + cmp.mass());
+            logger.info(" | " + cmp + ": total count = " + cmp.count() + "; total mass = " + cmp.mass());
             count += cmp.count();
         }
-        System.out.println("Total FirstAidBox mass: " + _totalMass + " grams");
-        System.out.println("Total count: " + count + " components");
-        System.out.println("Current FirstAidBox state: " + _state);
+        logger.info("Total FirstAidKit mass: " + _totalMass + " grams");
+        logger.info("Total count: " + count + " components");
+        logger.info("Current FirstAidKit state: " + _state);
     }
 
     @Override
@@ -138,20 +143,20 @@ public class FirstAidBox {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FirstAidBox _FirstAidBox = (FirstAidBox) o;
-        return _totalMass == _FirstAidBox._totalMass &&
-                Objects.equals(_components, _FirstAidBox._components) &&
-                Objects.equals(_name, _FirstAidBox._name) &&
-                Objects.equals(_ExcessComponentsChain, _FirstAidBox._ExcessComponentsChain) &&
-                _size == _FirstAidBox._size &&
-                _state == _FirstAidBox._state;
+        FirstAidKit _FirstAidKit = (FirstAidKit) o;
+        return _totalMass == _FirstAidKit._totalMass &&
+                Objects.equals(_components, _FirstAidKit._components) &&
+                Objects.equals(_name, _FirstAidKit._name) &&
+                Objects.equals(_ExcessComponentsChain, _FirstAidKit._ExcessComponentsChain) &&
+                _size == _FirstAidKit._size &&
+                _state == _FirstAidKit._state;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb
-                .append("FirstAidBox: ")
+                .append("FirstAidKit: ")
                 .append(this._name)
                 .append("\nmass:")
                 .append(this._totalMass)
